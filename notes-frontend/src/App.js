@@ -4,13 +4,41 @@ import Note from "./Components/Note";
 import axios from "axios";
 import { useState } from 'react';
 
+
 function App() {
+
+  const [titulo, setTitulo] = useState('');
+
+  function Search(){
+    const Atualiza = (event)=>{
+      setTitulo(event.target.value);
+    };
+    return(
+        <main class = "container">
+
+        <form class="form-card" onSubmit={carrega_receita}>
+            <input
+            class="form-card-title"
+            type="text"
+            name="titulo"
+            placeholder="Nome da receita..."
+            onChange={Atualiza}
+            value = {titulo} //preciso definir meu titulo
+            />
+            <button class="btn" type = 'submit'>Criar</button>
+        </form>
+        </main>
+    );
+  }
+
+  
+
 
   const options = {
     method: 'GET',
     url: 'https://recipe-by-api-ninjas.p.rapidapi.com/v1/recipe',
     params: {
-      query: 'italian wedding soup'
+      query: titulo
     },
     headers: {
       'content-type': 'application/octet-stream',
@@ -20,20 +48,27 @@ function App() {
   };
 
   
-  axios.request(options)
-  .then((res) => console.log(res));
-  
-
   const [notes, setNotes]= useState([]); 
-  axios.request(options).then((res) => setNotes(res.data));
-
-  console.log(notes);
+ 
+  const carrega_receita = (event) => {
+    event.preventDefault();
+    axios.request(options).then((res) => {
+      setNotes(res.data)
+      setTitulo("");
+      console.log(res.data);
+    
+    });
+  
+    //console.log(notes);
+  };
+  
 
   
   return (
     <div className="App">
+      <Search />
       {notes.map((note) => (
-        <Note key = {`note__${note.id}`} title = {note.title}>{note.content}</Note>
+        <Note key = {`note__${note.id}`} title = {note.title}>{note.ingredients}</Note>
       ))}  
     </div>
   );
