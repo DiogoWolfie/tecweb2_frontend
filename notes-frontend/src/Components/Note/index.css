@@ -66,6 +66,9 @@
     flex-direction: column;
   }
   
-  
+  .block_card{
+    display: flex;
+    flex-direction: row;
+  };
   
  

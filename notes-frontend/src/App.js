@@ -1,6 +1,7 @@
 //import logo from './logo.svg';
 import './App.css';
 import Note from "./Components/Note";
+import './Components/Note/index.css';
 import axios from "axios";
 import { useState } from 'react';
 
@@ -23,7 +24,7 @@ function App() {
             name="titulo"
             placeholder="Nome da receita..."
             onChange={Atualiza}
-            value = {titulo} //preciso definir meu titulo
+            value = {titulo} 
             />
             <button class="btn" type = 'submit'>Criar</button>
         </form>
@@ -67,9 +68,12 @@ function App() {
   return (
     <div className="App">
       <Search />
-      {notes.map((note) => (
-        <Note key = {`note__${note.id}`} title = {note.title}>{note.ingredients}</Note>
-      ))}  
+      <div className = "block_card">
+        {notes.map((note) => (
+          <Note key = {`note__${note.id}`} title = {note.title}>{note.ingredients}</Note>
+        ))} 
+      </div>
+       
     </div>
   );
 }
