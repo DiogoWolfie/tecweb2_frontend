@@ -4,42 +4,44 @@ import Note from "./Components/Note";
 import './Components/Note/index.css';
 import axios from "axios";
 import { useState } from 'react';
+import Search from "./Components_Search/Search.js"
+import Button from './Component_Button/Button.js'; 
 
 
 function App() {
 
-  const [titulo, setTitulo] = useState('');
-
-  function Search(){
-    const Atualiza = (event)=>{
-      setTitulo(event.target.value);
-    };
-    return(
-        <main class = "container">
-
-        <form class="form-card" onSubmit={carrega_receita}>
-            <input
-            class="form-card-title"
-            type="text"
-            name="titulo"
-            placeholder="Nome da receita..."
-            onChange={Atualiza}
-            value = {titulo} 
-            />
-            <button class="btn" type = 'submit'>Criar</button>
-        </form>
-        </main>
-    );
-  }
-
   
 
+  // function Search(){
+  //   const Atualiza = (event)=>{
+  //     setTitulo(event.target.value);
+  //   };
+  //   return(
+  //       <main class = "container">
+
+  //       <form class="form-card" onSubmit={carrega_receita}>
+  //           <input
+  //           class="form-card-title"
+  //           type="text"
+  //           name="titulo"
+  //           placeholder="Nome da receita..."
+  //           onChange={Atualiza}
+  //           value = {titulo}
+  //           />
+  //           <button class="btn" type = 'submit'>Pesquisar</button>
+  //       </form>
+  //       </main>
+  //   );
+  // }
+
+  
+  const [titulo, setTitulo] = useState('');
 
   const options = {
     method: 'GET',
     url: 'https://recipe-by-api-ninjas.p.rapidapi.com/v1/recipe',
     params: {
-      query: titulo
+      query: titulo 
     },
     headers: {
       'content-type': 'application/octet-stream',
@@ -47,6 +49,7 @@ function App() {
       'X-RapidAPI-Host': 'recipe-by-api-ninjas.p.rapidapi.com'
     }
   };
+  
 
   
   const [notes, setNotes]= useState([]); 
@@ -56,7 +59,6 @@ function App() {
     axios.request(options).then((res) => {
       setNotes(res.data)
       setTitulo("");
-      console.log(res.data);
     
     });
   
@@ -66,8 +68,12 @@ function App() {
 
   
   return (
+    
+    <div>
+      <Button />
     <div className="App">
-      <Search />
+      
+      <Search carrega_receita={carrega_receita} titulo={titulo} setTitulo={setTitulo} />
       <div className = "block_card">
         {notes.map((note) => (
           <Note key = {`note__${note.id}`} title = {note.title}>{note.ingredients}</Note>
@@ -75,6 +81,8 @@ function App() {
       </div>
        
     </div>
+    </div>
+    
   );
 }
 
