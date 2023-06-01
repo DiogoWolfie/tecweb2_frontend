@@ -3,39 +3,70 @@ import './App.css';
 import Note from "./Components/Note";
 import './Components/Note/index.css';
 import axios from "axios";
-import { useState } from 'react';
+import { useEffect, useState } from "react";
 import Search from "./Components_Search/Search.js"
 import Button from './Component_Button/Button.js'; 
 
 
+
+
 function App() {
 
-  
-
-  // function Search(){
-  //   const Atualiza = (event)=>{
-  //     setTitulo(event.target.value);
-  //   };
-  //   return(
-  //       <main class = "container">
-
-  //       <form class="form-card" onSubmit={carrega_receita}>
-  //           <input
-  //           class="form-card-title"
-  //           type="text"
-  //           name="titulo"
-  //           placeholder="Nome da receita..."
-  //           onChange={Atualiza}
-  //           value = {titulo}
-  //           />
-  //           <button class="btn" type = 'submit'>Pesquisar</button>
-  //       </form>
-  //       </main>
-  //   );
-  // }
-
+  const [exercicios, setExercicios]= useState([]);  //dicionário com o headline, url e img
+  const [usuario,setUsuario] = useState([]); //meus emais de usuário
   
   const [titulo, setTitulo] = useState('');
+
+const url = "https://tecweb-js.insper-comp.com.br/token" //token para os exercícios
+const url2 = "https://tecweb-js.insper-comp.com.br/exercicio" //exercicios
+    
+async function getToken(url){
+  let dic = { headers:{
+    "Content-Type": "application/json",
+    "Accept": "application/json"
+    } 
+  };
+  const token = await axios.post(url, {username: "diogopl1"}, dic)
+  console.log(token) //fazendo o cansole do token obtido
+
+  //se der tudo certo, me devolve o token
+  if(token.status === 200){
+    return token.data.accessToken;
+  }
+  //se não, escreve o estado do token no console
+  else{
+    console.log(token.status)
+}
+}
+    
+    
+async function Exercicio(url2){
+    const t = await getToken(url)
+    
+    let dic2 = { headers: {"Content-Type": "application/json", 
+    "Accept": "application/json",
+    "Authorization": `Bearer ${t}`} 
+    }; 
+    
+    
+    axios
+    .get(url2, dic2)
+    .then((response)=> {
+      console.log(response.data)//devolvendo a lista de exercício
+      setExercicios(response.data)
+      setUsuario(response.data["nome-do-usuario"].entrada.email)
+      console.log(usuario)
+    })
+   
+    
+  }
+
+  useEffect(()=>{
+    Exercicio(url2)
+  }, [])
+
+
+  
 
   const options = {
     method: 'GET',
@@ -72,13 +103,17 @@ function App() {
     <div>
       <Button />
     <div className="App">
-      
       <Search carrega_receita={carrega_receita} titulo={titulo} setTitulo={setTitulo} />
+      <p>
+        {usuario}
+      </p>
       <div className = "block_card">
         {notes.map((note) => (
           <Note key = {`note__${note.id}`} title = {note.title}>{note.ingredients}</Note>
         ))} 
       </div>
+      
+      
        
     </div>
     </div>
